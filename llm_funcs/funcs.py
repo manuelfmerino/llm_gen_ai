@@ -61,10 +61,10 @@ def generate_answer(
     model,
     question,
     contexts,
-    max_len=50,
-    min_len=40,
-    length_penalty=2.0,
-    num_beans=4,
+    max_len,
+    min_len,
+    length_penalty,
+    num_beans,
 ):
     """
     Generates an answer based on a given question and contexts.
@@ -79,11 +79,10 @@ def generate_answer(
     # Generate output using GPT2
     summary_ids = model.generate(
         inputs["input_ids"],
-        max_new_tokens=50,
-        min_length=40,
-        length_penalty=2.0,
-        num_beams=4,
+        max_new_tokens=max_len,
+        min_length=min_len,
+        length_penalty=length_penalty,
+        num_beams=num_beans,
         early_stopping=True,
-        pad_token_id=tokenizer.eos_token_id,
     )
     return tokenizer.decode(summary_ids[0], skip_special_tokens=True)
