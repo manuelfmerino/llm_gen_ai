@@ -17,7 +17,7 @@ def read_and_split_text(filename):
     return paragraphs
 
 
-def encode_contexts(text_list, context_tokenizer, context_encoder):
+def encode_contexts(text_list, context_tokenizer, context_encoder, max_len):
     """
     Function to tokenize and create contextual embeddings of passages to be used in RAG.
     """
@@ -26,7 +26,7 @@ def encode_contexts(text_list, context_tokenizer, context_encoder):
     embeddings = []
     for text in text_list:
         inputs = context_tokenizer(
-            text, return_tensors="pt", padding=True, truncation=True, max_length=256
+            text, return_tensors="pt", padding=True, truncation=True, max_length=max_len
         )
         outputs = context_encoder(**inputs)
         embeddings.append(outputs.pooler_output)
