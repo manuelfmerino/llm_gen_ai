@@ -7,8 +7,10 @@ from ibm_watson_machine_learning.foundation_models.extensions.langchain import (
 import os
 
 
-def llm_model(prompt_txt, model_id="ibm/granite-3-8b-instruct", params=None):
-    """Function to initialize and wrap a model using IBM's watsonx.ai platform."""
+def llm_model(
+    prompt_txt, model_id="mistralai/mistral-small-3-1-24b-instruct-2503", params=None
+):
+    """Function to initialize and wrap a model using IBM's watsonx.ai platform to be used with LangChain."""
 
     default_params = {
         "max_new_tokens": 256,
@@ -30,6 +32,7 @@ def llm_model(prompt_txt, model_id="ibm/granite-3-8b-instruct", params=None):
         GenParams.TOP_K: default_params["top_k"],
     }
 
+    # Define cloud credentials
     credentials = {
         "url": os.getenv("WATSONX_URL"),
         "apikey": os.getenv("WATSONX_APIKEY"),
@@ -45,7 +48,6 @@ def llm_model(prompt_txt, model_id="ibm/granite-3-8b-instruct", params=None):
     )
 
     # Wrap model into standard LLM interface for LangChain usage
-    mixtral_llm = WatsonxLLM(model=model)
-    response = mixtral_llm.invoke(prompt_txt)
+    llm_api = WatsonxLLM(model=model)
 
-    return response
+    return llm_api
