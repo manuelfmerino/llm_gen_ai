@@ -47,7 +47,7 @@ def llm_model(
         project_id=project_id,
     )
 
-    # Wrap model into standard LLM interface for LangChain usage
+    # Wrap model into standard LLM interface for LangChain usage, converting it into a chat model
     llm_api = WatsonxLLM(model=model)
 
     return llm_api
