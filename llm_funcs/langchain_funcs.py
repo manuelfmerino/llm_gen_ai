@@ -3,16 +3,17 @@ from ibm_watsonx_ai.metanames import GenTextParamsMetaNames as GenParams
 from ibm_watson_machine_learning.foundation_models.extensions.langchain import (
     WatsonxLLM,
 )
+from ibm_watsonx_ai.foundation_models.utils.enums import DecodingMethods
+
 
 import os
 
 
-def llm_model(
-    prompt_txt, model_id="mistralai/mistral-small-3-1-24b-instruct-2503", params=None
-):
+def llm_model(model_id="mistralai/mistral-small-3-1-24b-instruct-2503", params=None):
     """Function to initialize and wrap a model using IBM's watsonx.ai platform to be used with LangChain."""
 
     default_params = {
+        "decoding_method": DecodingMethods.GREEDY,
         "max_new_tokens": 256,
         "min_new_tokens": 0,
         "temperature": 0.5,
@@ -25,6 +26,7 @@ def llm_model(
 
     # Map parameters to IBM watsonx.ai API
     parameters = {
+        GenParams.DECODING_METHOD: default_params["decoding_method"],
         GenParams.MAX_NEW_TOKENS: default_params["max_new_tokens"],
         GenParams.MIN_NEW_TOKENS: default_params["min_new_tokens"],
         GenParams.TEMPERATURE: default_params["temperature"],
