@@ -4,7 +4,8 @@ from ibm_watson_machine_learning.foundation_models.extensions.langchain import (
     WatsonxLLM,
 )
 from ibm_watsonx_ai.foundation_models.utils.enums import DecodingMethods
-
+from langchain.chains import RetrievalQA, ConversationalRetrievalChain
+from langchain.memory import ConversationBufferMemory
 
 import os
 
@@ -53,3 +54,33 @@ def llm_model(model_id="mistralai/mistral-small-3-1-24b-instruct-2503", params=N
     llm_api = WatsonxLLM(model=model)
 
     return llm_api
+
+
+def qa_agent(llm, embedded_doc):
+    """Function to create a Q&A agent that answer questions about a given document."""
+
+    # Create memory
+    memory = ConversationBufferMemory(memory_key="chat_history", return_message=True)
+    qa = ConversationalRetrievalChain.from_llm(
+        llm=llm,
+        chain_type="stuff",
+        retriever=embedded_doc.as_retriever(),
+        memory=memory,
+        get_chat_history=lambda h: h,
+        return_source_documents=False,
+    )
+
+    history = []
+
+    while True:
+        query = input("Question: ")
+
+        if query.lower() in ["quit", "exit", "bye"]:
+            print("Answer: Goodbye!")
+            break
+
+        result = qa({"question": query}, {"chat_history": history})
+
+        history.append((query, result["answer"]))
+
+        print("Answer: ", result["answer"])
